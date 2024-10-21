@@ -12,7 +12,7 @@ bcrypt = Bcrypt(app)
 
 from shop.admin import routes
 
-if __name__ == "__main__":
-    app.run(debug=os.getenv('FLASK_DEBUG')=='1')
-    with app.app_context():
-        db.create_all()
+# if __name__ == "__main__":
+#     app.run(debug=os.getenv('FLASK_DEBUG')=='1')
+#     # with app.app_context():
+#     #     db.create_all()
