@@ -10,9 +10,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app= Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///shop.db'
 app.config['SECRET_KEY']='alahsxlanxlanj12331'
-app.config['UPLOADED_PHOTO_DEST'] = os.path.join(basedir,'static/images')
+app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir,'static/images')
+
 photos = UploadSet('photos', IMAGES)
-configure_uploads(app, (photos, media))
+configure_uploads(app, photos)
+patch_request_class(app)
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
