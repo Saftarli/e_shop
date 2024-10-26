@@ -25,6 +25,19 @@ def addbrand():
     
     return render_template('products/addbrand.html', brands ='brands')
 
+@app.route('/updatebrand/<int:id>',methods = ['GET','POST'])
+def updatebrand(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+    updatebrand= Brand.query.get_or_404(id)
+    brand = request.form.get('brand')
+    if request.method=="POST":
+        updatebrand.name = brand
+        flash(f'Your brand has been updated', 'success')
+        db.session.commit()
+        return redirect(url_for('brands'))
+    return render_template('products/updatebrand.html', title='Update Brand Page', updatebrand=updatebrand)
+
 
 @app.route('/addcat', methods = ['GET','POST'])
 def addcat():
@@ -38,6 +51,19 @@ def addcat():
     
     
     return render_template('products/addbrand.html')
+
+@app.route('/updatecat/<int:id>',methods = ['GET','POST'])
+def updatecat(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+    updatecat= Category.query.get_or_404(id)
+    category = request.form.get('category')
+    if request.method=="POST":
+        updatecat.name = category
+        flash(f'Your category has been updated', 'success')
+        db.session.commit()
+        return redirect(url_for('category'))
+    return render_template('products/updatebrand.html', title='Update cagtegory Page', updatecat=updatecat)
 
 
 @app.route('/addproduct',methods=['GET','POST'])
