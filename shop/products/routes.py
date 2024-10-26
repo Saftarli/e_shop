@@ -43,3 +43,4 @@ def addproduct():
     categories = Category.query.all()
     form = Addproducts(request.form)
     return render_template('products/addproduct.html', title="Add Product page", brands=brands, categories=categories, form=form)
+
