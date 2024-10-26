@@ -1,6 +1,6 @@
 from flask import redirect,render_template,url_for,flash,request
 from shop import db,app, photos
-from .models import Brand, Category
+from .models import Brand, Category, Addproduct
 from .forms import Addproducts
 import secrets
 
@@ -43,8 +43,24 @@ def addproduct():
     categories = Category.query.all()
     form = Addproducts(request.form)
     if request.method == "POST":
-        photos.save(request.files.get('image_1'), name=secrets.token_hex(10)+ ".")
-        photos.save(request.files.get('image_2'), name=secrets.token_hex(10)+ ".")
-        photos.save(request.files.get('image_3'), name=secrets.token_hex(10)+ ".")
+        name = form.name.data
+        price = form.price.data
+        discount = form.discount.data
+        stock = form.stock.data
+        colors = form.colors.data
+        desc = form.discription.data
+        brand= request.form.get('brand')
+        category = request.form.get('category')
+        image_1 =photos.save(request.files.get('image_1'), name=secrets.token_hex(10)+ ".")
+        image_2 =photos.save(request.files.get('image_2'), name=secrets.token_hex(10)+ ".")
+        image_3 =photos.save(request.files.get('image_3'), name=secrets.token_hex(10)+ ".")
+        
+        addpro = Addproduct(name=name,price=price,stock=stock,discount=discount,colors=colors,desc=desc,brand_id=brand,category_id=category,image_1=image_1, image_2=image_2,image_3=image_3)
+        db.session.add(addpro)
+        flash(f'The product {name}  has been added database', 'success')
+        db.session.commit()
+        return redirect(url_for('home'))
+    
+    
     return render_template('products/addproduct.html', title="Add Product page", brands=brands, categories=categories, form=form)
 
