@@ -21,8 +21,6 @@ def addbrand():
         flash(f'The Brand {getbrand} was added to your database', 'success')
         db.session.commit()
         return redirect(url_for('addbrand'))
-    
-    
     return render_template('products/addbrand.html', brands ='brands')
 
 @app.route('/updatebrand/<int:id>',methods = ['GET','POST'])
@@ -87,7 +85,8 @@ def addproduct():
         image_2 =photos.save(request.files.get('image_2'), name=secrets.token_hex(10)+ ".")
         image_3 =photos.save(request.files.get('image_3'), name=secrets.token_hex(10)+ ".")
         
-        addpro = Addproduct(name=name,price=price,stock=stock,discount=discount,colors=colors,desc=desc,brand_id=brand,category_id=category,image_1=image_1, image_2=image_2,image_3=image_3)
+        addpro = Addproduct(name=name,price=price,stock=stock,discount=discount,colors=colors,
+                            desc=desc,brand_id=brand,category_id=category,image_1=image_1, image_2=image_2,image_3=image_3)
         db.session.add(addpro)
         flash(f'The product {name}  has been added database', 'success')
         db.session.commit()
@@ -96,3 +95,31 @@ def addproduct():
     
     return render_template('products/addproduct.html', title="Add Product page", brands=brands, categories=categories, form=form)
 
+@app.route('/updateproduct/<int:id>', methods=["GET","POST"])
+def updateproduct(id):
+    brands = Brand.query.all()
+    categories = Category.query.all()
+    product = Addproduct.query.get_or_404(id)
+    brand = request.form.get('brand')
+    category = request.form.get('category')
+    form = Addproducts(request.form)
+    if request.method == "POST":
+        product.name = form.name.data
+        product.price = form.price.data
+        product.discount = form.discount.data
+        product.brand_id = brand
+        product.category_id = category
+        product.colors = form.colors.data
+        product.desc = form.discription.data
+        db.session.commit()
+        flash(f'You product has been updated', 'success')
+        return redirect('home')
+        
+    form.name.data = product.name
+    form.price.data = product.price
+    form.discount.data = product.discount
+    form.stock.data = product.stock
+    form.colors.data = product.colors
+    form.discription.data = product.desc
+    
+    return render_template('products/updateproduct.html', form=form, brands=brands,categories=categories,product=product)
