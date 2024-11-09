@@ -6,13 +6,7 @@ import os
 from .models import User
 
 
-@app.route('/')
-def home():
-    if 'email' not in session:
-        flash(f'Plaese login first','danger')
-        return redirect(url_for('login'))
-    products = Addproduct.query.all()
-    return render_template('admin/index.html', title='Admin Page', products=products)
+
 
 @app.route('/category')
 def category():
@@ -50,6 +44,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['email'] = form.email.data
+            print(session, '##############')
             flash('You are logged in','success')
             return redirect(request.args.get('next') or url_for('home'))
         else:

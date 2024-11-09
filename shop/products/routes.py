@@ -5,9 +5,13 @@ from .forms import Addproducts
 import secrets, os
 
 
-# @app.route('/')
-# def home():
-#     return " "
+@app.route('/')
+def home():
+    if 'email' not in session:
+        flash(f'Plaese login first','danger')
+        return redirect(url_for('login'))
+    products = Addproduct.query.all()
+    return render_template('admin/index.html', title='Admin Page', products=products)
 
 @app.route('/addbrand', methods = ['GET','POST'])
 def addbrand():
@@ -36,6 +40,16 @@ def updatebrand(id):
         return redirect(url_for('brands'))
     return render_template('products/updatebrand.html', title='Update Brand Page', updatebrand=updatebrand)
 
+@app.route('/deletebrand/<int:id>', methods = ["POST"])
+def deletebrand(id):
+    brand = Brand.query.get_or_404(id)
+    if request.method == "POST":
+        db.session.delete(brand)
+        db.session.commit()
+        flash(f"The Brand {brand.name} was deleted from your database", 'success')
+        return redirect(url_for('home'))
+    flash(f"The Brand {brand.name} cant be deleted", 'warning')
+    return redirect('/')
 
 @app.route('/addcat', methods = ['GET','POST'])
 def addcat():
@@ -63,6 +77,17 @@ def updatecat(id):
         return redirect(url_for('category'))
     return render_template('products/updatebrand.html', title='Update cagtegory Page', updatecat=updatecat)
 
+
+@app.route('/deletecategory/<int:id>', methods = ["POST"])
+def deletecategory(id):
+    category = Category.query.get_or_404(id)
+    if request.method == "POST":
+        db.session.delete(category)
+        db.session.commit()
+        flash(f"The Category {category.name} was deleted from your database", 'success')
+        return redirect(url_for('home'))
+    flash(f"The Brand {category.name} cant be deleted", 'warning')
+    return redirect('/')
 
 @app.route('/addproduct',methods=['GET','POST'])
 def addproduct():
@@ -133,7 +158,7 @@ def updateproduct(id):
                 product.image_1 = photos.save(request.files.get('image_3'), name=secrets.token_hex(10)+ ".")
         db.session.commit()
         flash(f'You product has been updated', 'success')
-        return redirect('home')
+        return redirect('/')
         
     form.name.data = product.name
     form.price.data = product.price
