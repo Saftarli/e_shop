@@ -7,11 +7,8 @@ import secrets, os
 
 @app.route('/')
 def home():
-    if 'email' not in session:
-        flash(f'Plaese login first','danger')
-        return redirect(url_for('login'))
-    products = Addproduct.query.all()
-    return render_template('admin/index.html', title='Admin Page', products=products)
+    products = Addproduct.query.filter(Addproduct.stock > 0)
+    return render_template('products/index.html', products=products)
 
 @app.route('/addbrand', methods = ['GET','POST'])
 def addbrand():
