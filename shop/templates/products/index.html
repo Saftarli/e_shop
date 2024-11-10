@@ -22,6 +22,19 @@
                         {% endfor %}
                     </div>
                 </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Categories
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% for category in categories %}
+                        <a class="dropdown-item" href="{{url_for('get_category',id=category.id)}}">{{ category.name }}</a>
+                        {% endfor %}
+                    </div>
+                </li>
+
+
                 <li class="nav-item">
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
@@ -54,7 +67,33 @@
                 </div>
             </div>
         </div>
+        {% endfor %} 
+
+        {% elif get_cat_prod %}
+        {% for get_cat in get_cat_prod %}
+
+        <div class="col-md-3 mt-3">
+            <div class="card">
+                <img src="{{ url_for('static', filename='images/' + get_cat.image_1) }}" alt="{{ get_cat.name }}" class="card-img-top" height="200">
+                <div class="card-body">
+                    {% if get_cat.discount > 0 %}
+                    <p style="text-shadow: 1px 1px 2px #000; color:#f00; transform: rotate(-20deg); position:absolute; top:20%; left: 20%;"> Discount {{ get_cat.discount }} %</p>
+                    {% endif %}
+                    <h5 class="text-center">{{ get_cat.name }}</h5>
+                    <p class="text-center">Price: {{ get_cat.price }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="float-left btn btn-sm btn-primary">Details</a>
+                    <a href="#" class="float-right btn btn-sm btn-warning">Add to cart</a>
+                </div>
+            </div>
+        </div>
+
         {% endfor %}
+
+
+
+
         {% else %}
         {% for product in products %}
         <div class="col-md-3 mt-3">
