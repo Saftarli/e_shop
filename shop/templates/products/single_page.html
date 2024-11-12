@@ -34,7 +34,7 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    <a class="nav-link disabled" href="#" tabindex="-1">Cart ({{session['ShoppingCart']|length}})</a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
@@ -59,17 +59,34 @@
             {% endif %}
             <b> Product Discription </b>
             <p>{{ product.desc }}</p>
-            <a href="" class="btn btn-warning"> Add to cart </a>
+            <hr>
+            <form action="{{url_for("AddCart")}}" method="post">
+                <input type="hidden" name="product_id" value="{{product.id}}">
+                <button type="submit" class="btn btn-sm btn-warning"> Add Cart</button>
+                <label for=""> Quantity: </label>
+                <input type="number" name="quantity" id="" value="1" min="1" nax="product.stock">
+                {% set colors = product.colors.split(",") %}
+                <label for="colors" id=""></label>
+                <select name="colors" id="">
+                    {% for color in colors %}
+                    {% set col = color.split(":") %}
+                    <option value="{{col[0]}}">{{col[0]|capitalize}}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            
         </div>
     </div>
     <div class="row">
         <div class="col-md-12" mt-3 id="s_image">
+            <hr>
             <img src="{{url_for('static', filename='images/' + product.image_1)}}" alt={{product.name}} width="120" height="120" class="p-3">
             <img src="{{url_for('static', filename='images/' + product.image_2)}}" alt={{product.name}} width="120" height="120" class="p-3">
             <img src="{{url_for('static', filename='images/' + product.image_3)}}" alt={{product.name}} width="120" height="120" class="p-3">
         </div>
     </div>
 </div>
+
 
 <script>
     var b_image = document.getElementById("b_image");
