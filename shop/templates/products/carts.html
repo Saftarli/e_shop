@@ -1,50 +1,68 @@
 {% include "layout.html" %}
 {% block content %}
-<div class="container">
+{% include "navbar.html" %}
+<div class="container mt-4">
     <div class="row">
-        <table class="table table-sm">
-            <thead>
-                <th>Sr</th>
-                <th>Name</th>
-                <th>Color</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Discount</th>
-                <th>Subtotal</th>
-                <th>Update</th>
-                <th>Delete</th>
-            </thead>
-            <tbody>
-                {% for key ,  product in session['Shoppingcart'].items() %}
-                {% set discount = "%0.2f"|format((product.discount/100)* product.price|float()) %}
-                <tr>
-                    <td>{{loop.index}}</td>
-                    <td>{{product.name}}</td>
-                    <td>{{product.color}}</td>
-                    <td>${{product.price}}</td>
-                    <td>{{product.quantity}}</td>
-                    {% if product.discount > 0 %}
-                    <td>{{product.discount}}% &nbsp; is {{discount}}</td>
-                    {% else %}
-                    <td></td>
-                    {% endif %}
-                    {% set subtotal = product.quantity|int * product.price|float %}
-                    <td>{{"%0.2f"|format((subtotal|float) - discount|float)}}</td>
-                    <td><a href="#">Update</a></td>
-                    <td><a href="#">Delete</a></td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td></td>
-                    <td><a href="/"> Countinue shopping</a></td>
-                    <td colspan="3"><h4>Tax: ${{tax}}</h4></td>
-                    <td colspan="4"> <h4>Grand Total ${{grandtotal}}</h4></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="col-md-12">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Sr</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Discount</th>
+                        <th>Subtotal</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, product in session['Shoppingcart'].items() %}
+                    {% set discount = (product.discount|float / 100) * product.price|float %}
+                    {% set subtotal = product.quantity|int * product.price|float - discount %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td><img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" width="50" height="45"></td>
+                        <td>{{ product.name }}</td>
+                        <td>
+                        {% set colors = product.colors.split(",") %}
+                        <label for="color">Colors:</label>
+                        <select name="color" id="colors">
+                            <option value="{{ product.color }}">{{ product.color|capitalize }}</option>
+                            {% for color in colors %}
+                            {% set col = color.split(":") %}
+                            <option value="{{col[0]}}">{{col[0]|capitalize}}</option>
+                            {% endfor %}
+                        </select>
+                        </td>
+                        <td>${{ "%.2f"|format(product.price|float) }}</td>
+                        <td>
+                            <input type="number" name="quantity" min="1" max="10" value="{{ product.quantity }}" class="form-control">
+                        </td>
+                        <td>
+                            {% if product.discount > 0 %}
+                            {{ product.discount }}% (Save: ${{ "%.2f"|format(discount) }})
+                            {% else %}
+                            No Discount
+                            {% endif %}
+                        </td>
+                        <td>${{ "%.2f"|format(subtotal) }}</td>
+                        <td><button type="submit" class="btn btn-sm btn-primary">Update</button></td>
+                            </form>
+                        <td><a href="#" class="btn btn-sm btn-danger">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4"><a href="/" class="btn btn-sm btn-secondary">Continue Shopping</a></td>
+                        <td colspan="2"><h5>Tax: ${{ tax }}</h5></td>
+                        <td colspan="2"><h5>Grand Total: ${{ grandtotal }}</h5></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-    
-    
-
 {% endblock content %}

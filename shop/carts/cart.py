@@ -18,31 +18,41 @@ def AddCart():
     try:
         product_id = request.form.get('product_id')
         quantity = request.form.get('quantity')
-        colors = request.form.get('colors')
+        color = request.form.get('colors')  # Seçilən rəngi alın
         product = Addproduct.query.filter_by(id=product_id).first()
 
-        if product_id and quantity and colors and request.method == "POST":
+        if not product:
+            flash("Product not found", "danger")
+            return redirect(request.referrer)
+
+        if product_id and quantity and color and request.method == "POST":
             DictItems = {
                 product_id: {
                     "name": product.name,
                     "price": product.price,
                     "discount": product.discount,
-                    "color": colors,
+                    "color": color,  # Burada seçilmiş rəngi əlavə edin
                     "quantity": quantity,
-                    "image": product.image_1
+                    "image": product.image_1, 
+                    "colors": product.colors
                 }
             }
-            # print(DictItems, 'Sefterli')
 
             if 'Shoppingcart' in session:
                 session["Shoppingcart"] = MagerDicts(session["Shoppingcart"], DictItems)
             else:
                 session["Shoppingcart"] = DictItems
+            
+            session.modified = True  # Sessiya dəyişikliklərini qeyd edin
+            flash("Product added to cart", "success")
         return redirect(request.referrer)
 
     except Exception as e:
         print(f"Error adding to cart: {e}")
+        flash("An error occurred while adding to cart", "danger")
         return redirect(request.referrer)
+
+
 
 
 @app.route('/carts')
@@ -57,6 +67,14 @@ def getCart():
         subtotal -= discount
         tax = ("%.2f" % (.06 * float(subtotal)))
         grandtotal += float("%.2f" %(1.06 * subtotal))
+        
     return render_template('products/carts.html', tax=tax, grandtotal=grandtotal)
 
+@app.route('/empty')
+def empty_cart():
+    try:
+        session.clear()
+        return redirect(url_for('home'))
+    except Exception as e:
+        print(e)
 
