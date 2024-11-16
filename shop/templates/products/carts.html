@@ -54,13 +54,15 @@
                         <td>${{ "%.2f"|format(subtotal) }}</td>
                         <td><button type="submit" class="btn btn-sm btn-primary">Update</button></td>
                             </form>
-                        <td><a href="#" class="btn btn-sm btn-danger">Delete</a></td>
+                        <td><a href="{{url_for('deleteitem', id=key)}}" class="btn btn-sm btn-danger">Delete</a></td>
                     </tr>
                     {% endfor %}
                     <tr>
                         <td colspan="4"><a href="/" class="btn btn-sm btn-secondary">Continue Shopping</a></td>
+                        <td width="15%"></td>
                         <td colspan="2"><h5>Tax: ${{ tax }}</h5></td>
                         <td colspan="2"><h5>Grand Total: ${{ grandtotal }}</h5></td>
+                        <td><a href="{{url_for('clearcart')}}" class="btn btn-danger btn-sm float-right mr-4"> Clear Cart</a></td>
                     </tr>
                 </tbody>
             </table>

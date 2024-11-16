@@ -89,8 +89,32 @@ def updateCart(code):
             print(e)
             return redirect(url_for('getCart'))
     
+@app.route('/deleteitem/<int:id>')
+def deleteitem(id):
+    if 'Shoppingcart' not in session or len(session['Shoppingcart']) <=0:
+        return redirect(url_for('home'))
+    try:
+        session.modified = True
+        for key, item in session['Shoppingcart'].items():
+            if int(key) == id:
+                session['Shoppingcart'].pop(key,None)
+                flash('Item is deleted')
+                return redirect(url_for('getCart'))
+    except Exception as e:
+        print(e)
+        return redirect(url_for('getCart'))
 
-
+@app.route('/clearcart')
+def clearcart():
+    try:
+        
+        session.pop('Shoppingcart', None)
+        return redirect(url_for('home'))
+    except Exception as e:
+        print(e)   
+    
+    
+    
 @app.route('/empty')
 def empty_cart():
     try:
