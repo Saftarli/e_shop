@@ -48,7 +48,7 @@ def AddCart():
         return redirect(request.referrer)
 
     except Exception as e:
-        print(f"Error adding to cart: {e}")
+        print(f"Error the adding to cart: {e}")
         flash("An error occurred while adding to cart", "danger")
         return redirect(request.referrer)
 
