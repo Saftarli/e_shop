@@ -2,6 +2,7 @@
 {% block content %}
 {% include "navbar.html" %}
 <div class="container mt-4">
+    {% include '_messages.html' %}
     <div class="row">
         <div class="col-md-12">
             <table class="table table-sm">
@@ -28,10 +29,11 @@
                         <td><img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" width="50" height="45"></td>
                         <td>{{ product.name }}</td>
                         <td>
+                            <form action="{{url_for('updateCart', code=key)}}" method="post">
                         {% set colors = product.colors.split(",") %}
                         <label for="color">Colors:</label>
-                        <select name="color" id="colors">
-                            <option value="{{ product.color }}">{{ product.color|capitalize }}</option>
+                        <select name="color" id="color">
+                            <option value="{{ product.color }}" style="display: none;">{{ product.color|capitalize }}</option>
                             {% for color in colors %}
                             {% set col = color.split(":") %}
                             <option value="{{col[0]}}">{{col[0]|capitalize}}</option>

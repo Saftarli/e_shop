@@ -70,6 +70,27 @@ def getCart():
         
     return render_template('products/carts.html', tax=tax, grandtotal=grandtotal)
 
+@app.route('/updatecart<int:code>', methods=['POST'])
+def updateCart(code):
+    if 'Shoppingcart' not in session and len(session['Shoppingcart']) <=0:
+        return redirect(url_for('home'))
+    if request.method == 'POST':
+        quantity = request.form.get('quantity')
+        color = request.form.get('color')
+        try:
+            session.modified = True
+            for key , item in session['Shoppingcart'].items():
+                if int(key) == code:
+                    item['quantity'] = quantity
+                    item['color'] = color
+                    flash('Item is updated')
+                    return redirect(url_for('getCart'))
+        except Exception as e:
+            print(e)
+            return redirect(url_for('getCart'))
+    
+
+
 @app.route('/empty')
 def empty_cart():
     try:
