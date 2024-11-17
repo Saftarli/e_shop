@@ -2,6 +2,7 @@ from flask import render_template,session,redirect,url_for,request,flash
 from .forms import RegistrationForm,LoginForm
 from shop import app, db,bcrypt
 from shop.products.models import Addproduct, Brand, Category
+from shop.customers.models import Register
 import os
 from .models import User
 
@@ -41,7 +42,8 @@ def register():
 def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = Register.query.filter_by(email=form.email.data).first()
+        print(user.email,('#$#$#$#$'))
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['email'] = form.email.data
             print(session, '##############')

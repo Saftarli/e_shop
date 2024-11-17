@@ -59,6 +59,8 @@ def AddCart():
 
 @app.route('/carts')
 def getCart():
+    brands = Brand.query.join(Addproduct,(Brand.id==Addproduct.brand_id)).all()
+    categories = Category.query.join(Addproduct,(Category.id == Addproduct.category_id)).all()
     if 'Shoppingcart' not in session:
         return redirect(request.referrer)
     subtotal = 0
@@ -70,7 +72,7 @@ def getCart():
         tax = ("%.2f" % (.06 * float(subtotal)))
         grandtotal += float("%.2f" %(1.06 * subtotal))
         
-    return render_template('products/carts.html', tax=tax, grandtotal=grandtotal)
+    return render_template('products/carts.html', tax=tax, grandtotal=grandtotal, brands=brands, categories=categories)
 
 @app.route('/updatecart<int:code>', methods=['POST'])
 def updateCart(code):
