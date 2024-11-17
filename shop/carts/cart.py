@@ -1,6 +1,6 @@
 from flask import redirect, render_template, url_for, flash, request, session, current_app
 from shop import db, app, photos
-from shop.products.models import Addproduct
+from shop.products.models import Addproduct,Brand,Category
 
 def MagerDicts(dict1, dict2):
     # Merge dictionaries, adding quantities if items exist
@@ -20,6 +20,8 @@ def AddCart():
         quantity = request.form.get('quantity')
         color = request.form.get('colors')  # Seçilən rəngi alın
         product = Addproduct.query.filter_by(id=product_id).first()
+        brands = Brand.query.join(Addproduct,(Brand.id==Addproduct.brand_id)).all()
+        categories = Category.query.join(Addproduct,(Category.id == Addproduct.category_id)).all()
 
         if not product:
             flash("Product not found", "danger")

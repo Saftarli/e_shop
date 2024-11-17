@@ -1,5 +1,5 @@
 from flask import redirect,render_template,url_for,flash,request, session, current_app
-from shop import db,app, photos
+from shop import db,app, photos, search
 from .models import Brand, Category, Addproduct
 from .forms import Addproducts
 import secrets, os
@@ -8,10 +8,19 @@ import secrets, os
 @app.route('/')
 def home():
     page = request.args.get('page',1,type=int)
-    products = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).paginate(page=page, per_page=2)
+    products = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).paginate(page=page, per_page=4)
     brands = Brand.query.join(Addproduct,(Brand.id==Addproduct.brand_id)).all()
     categories = Category.query.join(Addproduct,(Category.id == Addproduct.category_id)).all()
     return render_template('products/index.html', products=products, brands=brands, categories=categories)
+
+@app.route('/result')
+def result():
+    searchword = request.args.get('q')
+    products = Addproduct.query.msearch(searchword,fields=['name','desc'], limit=6)
+    brands = Brand.query.join(Addproduct,(Brand.id==Addproduct.brand_id)).all()
+    categories = Category.query.join(Addproduct,(Category.id == Addproduct.category_id)).all()
+    return render_template('products/result.html', products=products, brands=brands, categories=categories)
+
 
 @app.route('/product/<int:id>')
 def single_page(id):
