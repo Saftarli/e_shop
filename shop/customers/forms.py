@@ -1,4 +1,4 @@
-from wtforms import StringField, TextAreaField, PasswordField, SubmitField, validators
+from wtforms import StringField, TextAreaField, PasswordField, SubmitField, validators, Form
 from flask_wtf.file import FileRequired,FileAllowed,FileField
 
 
@@ -16,6 +16,6 @@ class CustomerRegisterForm(Form):
     address = StringField('Address: ', [validators.DataRequired()])
     zipcode = StringField('Zip Code: ', [validators.DataRequired()])
     
-    profile = FileField('Profile: ', validators=[FileField(['jpg','png','jpeg','gif',], 'Image only please')],)
+    profile = FileField('Profile: ', validators=[FileAllowed(['jpg','png','jpeg','gif',], 'Image only please')])
     
     submit = SubmitField('Register')
