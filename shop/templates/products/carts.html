@@ -58,7 +58,7 @@
                     </tr>
                     {% endfor %}
                     <tr>
-                        <td colspan="4"><a href="/" class="btn btn-sm btn-secondary">Continue Shopping</a></td>
+                        <td colspan="4"><a href="{{url_for('get_order')}}" class="btn btn-sm btn-secondary">Order Now </a></td>
                         <td width="15%"></td>
                         <td colspan="2"><h5>Tax: ${{ tax }}</h5></td>
                         <td colspan="2"><h5>Grand Total: ${{ grandtotal }}</h5></td>
