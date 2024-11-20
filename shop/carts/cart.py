@@ -20,9 +20,9 @@ def AddCart():
         quantity = request.form.get('quantity')
         color = request.form.get('colors')  # Seçilən rəngi alın
         product = Addproduct.query.filter_by(id=product_id).first()
-        brands = Brand.query.join(Addproduct,(Brand.id==Addproduct.brand_id)).all()
-        categories = Category.query.join(Addproduct,(Category.id == Addproduct.category_id)).all()
-
+        
+        
+        
         if not product:
             flash("Product not found", "danger")
             return redirect(request.referrer)

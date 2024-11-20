@@ -1,8 +1,14 @@
-from shop import db
+from shop import db, login_manager
 from datetime import datetime
+from flask_login import UserMixin
 
 
-class Register(db.Model):
+@login_manager.user_loader
+def user_loader(user_id):
+    return Register.query.get(int(user_id))
+
+
+class Register(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=False)
     username = db.Column(db.String(50), unique=False)
