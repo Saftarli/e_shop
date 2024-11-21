@@ -1,0 +1,61 @@
+{% include "layout.html" %}
+{% block content %}
+{% include "navbar.html" %}
+<div class="container mt-4">
+    {% include '_messages.html' %}
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Sr.</th>
+                        
+                        <th>Name</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Discount</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, product in orders.orders.items() %}
+                    {% set discount = (product.discount|float / 100) * product.price|float %}
+                    {% set subtotal = product.quantity|int * product.price|float - discount %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td><img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" width="50" height="45"></td>
+                        <td>{{ product.name }}</td>
+                        <td>
+                            <form action="{{url_for('updateCart', code=key)}}" method="post">
+                        </td>
+                        <td>${{ "%.2f"|format(product.price|float) }}</td>
+                        <td>
+                            <input type="number" name="quantity" min="1" max="10" value="{{ product.quantity }}" class="form-control">
+                        </td>
+                        <td>
+                            {% if product.discount > 0 %}
+                            {{ product.discount }}% (Save: ${{ "%.2f"|format(discount) }})
+                            {% else %}
+                            No Discount
+                            {% endif %}
+                        </td>
+                        <td>${{ "%.2f"|format(subTotal) }}</td>
+                        <td><button type="submit" class="btn btn-sm btn-primary">Update</button></td>
+                            </form>
+                        <td><a href="{{url_for('deleteitem', id=key)}}" class="btn btn-sm btn-danger">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4"><a href="{{url_for('get_order')}}" class="btn btn-sm btn-secondary">Order Now </a></td>
+                        <td width="15%"></td>
+                        <td colspan="2"><h5>Tax: ${{ tax }}</h5></td>
+                        <td colspan="2"><h5>Grand Total: ${{ grandTotal }}</h5></td>
+                        <td><a href="{{url_for('clearcart')}}" class="btn btn-danger btn-sm float-right mr-4"> Clear Cart</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

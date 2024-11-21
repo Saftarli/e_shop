@@ -81,7 +81,24 @@ def get_order():
             flash("Sifariş yaradılarkən problem yarandı.", "danger")
             return redirect(url_for('getCart'))
 
-
-
-
-    
+@app.route('/orders/<invoices>')
+@login_required
+def orders(invoice):
+    if current_user.is_authenticated:
+        grandTotal = 0
+        subTotal = 0
+        customer_id = current_user.id 
+        customer = Register.query.filter_by(id=customer_id).first()
+        orders = CustomerOrder.query.filter_by(customer_id = customer_id).first()
+        for _key, product in orders.orders.items():
+            discount = (product['discount']/100) * float(product['price'])
+            subtotal += float(product['price']) * int(product['quantity'])
+            subtotal -= discount
+            tax = ("%.2f" % (.06 * float(subtotal)))
+            grandtotal += float("%.2f" %(1.06 * subtotal))
+        else:
+            return redirect(url_for('customerLogin'))
+        return render_template('customer/order.html',invoice=invoice, tax=tax, customer=customer, orders=orders,
+                               grandtotal=grandtotal, subtotal=subtotal)
+            
+        
