@@ -43,7 +43,6 @@ def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
         user = Register.query.filter_by(email=form.email.data).first()
-        print(user.email,('#$#$#$#$'))
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['email'] = form.email.data
             print(session, '##############')

@@ -1,5 +1,6 @@
 import logging
 from logging.config import fileConfig
+from shop.customers.models import JsonEcodedDict
 
 from flask import current_app
 

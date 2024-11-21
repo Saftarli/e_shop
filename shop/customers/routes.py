@@ -50,22 +50,35 @@ def customer_logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route('/getorder')
+@app.route('/get_order', methods=['POST', 'GET'])
 @login_required
 def get_order():
     if current_user.is_authenticated:
-        customer_id = current_user.id
+        # Unikal faktura nömrəsi
         invoice = secrets.token_hex(5)
+        
+        # Səbət məlumatını yoxlayın
+        if not session.get('Shoppingcart'):
+            flash("Səbət boşdur. Sifariş yaradıla bilməz.", "warning")
+            return redirect(url_for('getCart'))
+        
         try:
-            order = CustomerOrder(invoice=invoice, customer_id=customer_id,orders=session['Shoppingcart'] )
+            # Yeni sifariş yaradın
+            order = CustomerOrder(
+                invoice=invoice,
+                customer_id=current_user.id,
+                orders=session['Shoppingcart']  # JSON formatında sifariş məlumatı
+            )
             db.session.add(order)
             db.session.commit()
-            session.pop('Shoppincart')
-            flash('Your order has been sent', 'success')
+
+            # Sessiyanı təmizləyin
+            session.pop('Shoppingcart', None)
+            flash("Sifarişiniz uğurla göndərildi!", "success")
             return redirect(url_for('home'))
         except Exception as e:
-            print(e)
-            flash('Some thing went wrong while get order', 'danger')
+            print(f"Error: {e}")
+            flash("Sifariş yaradılarkən problem yarandı.", "danger")
             return redirect(url_for('getCart'))
 
 
